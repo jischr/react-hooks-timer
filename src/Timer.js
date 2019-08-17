@@ -4,7 +4,9 @@ function Timer() {
 
     return (
         <div>
-            <h1>Hi</h1>
+            <h1>0s</h1>
+            <button>Start</button>
+            <button>Reset</button>
         </div>
     );
 }
