@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Timer.css';
 
-function Timer() {
-    const textRef = useRef(null);
-    let [ seconds, setSeconds ] = useState(0);
-    let [ isActive, setIsActive ] = useState(false);
+function useTimer(initialSeconds = 0, initialIsActive = false) {
+    let [ seconds, setSeconds ] = useState(initialSeconds);
+    let [ isActive, setIsActive ] = useState(initialIsActive);
 
     function toggle() {
         setIsActive(!isActive);
@@ -13,11 +12,6 @@ function Timer() {
     function reset() {
         setSeconds(0);
         setIsActive(false);
-        toggleDisplay();
-    }
-
-    function toggleDisplay() {
-        textRef.current.classList.toggle('hide');
     }
 
     useEffect(() => {
@@ -33,7 +27,18 @@ function Timer() {
 
         return () => clearInterval(interval);
 
-    }, [isActive, seconds])
+    }, [isActive, seconds]);
+
+    return [ seconds, isActive, reset, toggle ];
+}
+
+function Timer() {
+    let [ seconds, isActive, reset, toggle  ] = useTimer();
+
+    const textRef = useRef(null);
+    function toggleDisplay() {
+        textRef.current.classList.toggle('hide');
+    }
 
     return (
         <div>
@@ -43,7 +48,7 @@ function Timer() {
                     'Pause' : 'Start'
                 }
             </button>
-            <button onClick={reset}>Reset</button>
+            <button onClick={() => { reset(); toggleDisplay();}}>Reset</button>
             <p ref={textRef} className="hide" >We are toggling text with refs!</p>
         </div>
     );
